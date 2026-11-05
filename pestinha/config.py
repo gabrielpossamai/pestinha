@@ -6,6 +6,7 @@ e é gravado a CADA mudança (se o programa cair, a escolha não se perde).
 """
 
 import random
+import sys
 
 from .paths import pet_id_valido
 from .store import read_json, read_lines, write_json
@@ -26,7 +27,7 @@ EMOTION_NAMES = {
 
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp"}
 
-PANIC_HOTKEY_TEXT = "Ctrl + Alt + Shift + B"
+PANIC_HOTKEY_TEXT = "⌃ ⌥ ⇧ B" if sys.platform == "darwin" else "Ctrl + Alt + Shift + B"
 
 # ============================================================
 # PERMISSÕES
