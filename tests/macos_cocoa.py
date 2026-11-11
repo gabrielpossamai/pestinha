@@ -89,13 +89,15 @@ def janelas():
         return {int(j["kCGWindowNumber"]) for j in lista or []}
 
     numeros = {nome: int(nativa.windowNumber()) for nome, nativa in nativas.items()}
+    # O painel sem ajuste se esconde enquanto o app está inativo. Ative antes
+    # de medir a visibilidade inicial, inclusive quando o CI começa sem foco.
+    nsapp = NSApplication.sharedApplication()
+    nsapp.activateIgnoringOtherApps_(True)
+    ativou = _esperar(app, nsapp.isActive)
     _esperar(app, lambda: set(numeros.values()) <= na_tela())
     antes = na_tela()
     proprias = [j for j, _rect, _max in macos.janelas_visiveis(set()) if j in numeros.values()]
 
-    nsapp = NSApplication.sharedApplication()
-    nsapp.activateIgnoringOtherApps_(True)
-    ativou = _esperar(app, nsapp.isActive)
     outro = _outro_programa(anterior)
     if ativou and outro is not None:
         if nsapp.respondsToSelector_("yieldActivationToApplication:"):     # macOS 14+: ativação cooperativa
