@@ -21,7 +21,10 @@ jobs:
       - name: Instalar biblioteca EGL no Linux (PySide6)
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get update
+          # DNS dos mirrors ubuntu.com indisponível: actions/runner-images#15296.
+          # A lista é usada pelas fontes Ubuntu do runner; as assinaturas continuam validadas pelo APT.
+          printf '%s\n' 'https://mirrors.edge.kernel.org/ubuntu/' | sudo tee /etc/apt/apt-mirrors.txt > /dev/null
+          sudo apt-get -o APT::Update::Error-Mode=any update
           sudo apt-get install -y --no-install-recommends libegl1
       # Só o necessário para os testes: sem PyInstaller (o executável é gerado à parte).
       - run: pip install -r requirements.txt pytest==8.4.2 pyflakes==4.1.0
