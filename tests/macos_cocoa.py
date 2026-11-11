@@ -89,8 +89,10 @@ def janelas():
         return {int(j["kCGWindowNumber"]) for j in lista or []}
 
     numeros = {nome: int(nativa.windowNumber()) for nome, nativa in nativas.items()}
-    # O painel sem ajuste se esconde enquanto o app está inativo. Ative antes
-    # de medir a visibilidade inicial, inclusive quando o CI começa sem foco.
+
+    # Capture o estado inicial apenas depois de ativar o app e esperar o WindowServer publicar as janelas.
+    # Antes disso, o NSPanel sem ajuste pode ainda não aparecer na lista OnScreenOnly, causando um falso
+    # negativo em `na_tela_antes` mesmo que a janela apareça corretamente quando o app ganha o foco.
     nsapp = NSApplication.sharedApplication()
     nsapp.activateIgnoringOtherApps_(True)
     ativou = _esperar(app, nsapp.isActive)
